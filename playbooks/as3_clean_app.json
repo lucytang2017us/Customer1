@@ -1,0 +1,6 @@
+[
+    {
+        "op": "remove",
+        "path": "/App_Billing_Domain/Customer8_App"
+     }
+ ]
