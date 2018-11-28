@@ -33,7 +33,7 @@
         username="{{ infoblox_username }}"
         password="{{ infoblox_password }}"
         action="create_ptr_record"
-        name="{{ application_name }}"
+        name="{{ domain_name }}"
         address="{{ next_avail_addr.result }}"
         comment="{{ ptr_comment }}"
       
