@@ -4,11 +4,10 @@
   gather_facts: False
 
   vars_files:
-    - "./files/https_app_onboard_vars.yml"
+    - "../files/https_app_onboard_vars.yml"
     
   tasks:
-  
-         
+           
     - name: Get network reference
       infoblox:
         action="get_network"
@@ -16,8 +15,7 @@
         server="{{ infoblox_hostname }}"
         username="{{ infoblox_username }}"
         password="{{ infoblox_password }}"
-        
-      
+              
     - name: Get next available ip
       infoblox:
         server="{{ infoblox_hostname }}"
