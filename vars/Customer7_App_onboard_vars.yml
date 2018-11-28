@@ -1,0 +1,39 @@
+---
+
+Customer7_App:
+
+pool_name: "Customer7_App_Pool"
+app_cert: "default"
+lb_mode: "least-connections-node"
+snat_value: "self"
+ssl_passphrase: "ZjVmNQ=="
+virtual_servers_ips: "10.1.10.100,10.1.10.200"
+tenant_name: "App_Billing_Domain"
+client_ssl_pf: "Customer7_App_CL"
+pool_member_port: "80"
+cert_key: "/Common/default.key"
+http_profile: "/Common/http-xff"
+pool_members_ips: "192.168.1.131,192.168.1.141"
+shared_path: "Common"
+cert_name: "/Common/default.crt"
+slow_rptime: "120"
+application_name: "Customer7_App"
+tcp_profile: "/Common/ssc-tcp-3600"
+policy_vs: "/Common/RDP_Baseline_4-7-16"
+persist_profile: "/Common/ssc-src_addr_1500"
+cert_chain: "/Common/ca-bundle.crt"
+passphrase_protected: "eyJhbGciOiJkaXIiLCJlbmMiOiJub25lIn0"
+pool_members:
+- name: "192.168.1.131"
+  port: "80"
+  ip: "192.168.1.131"
+  status: true
+- name: "192.168.1.141"
+  port: "80"
+  ip: "192.168.1.141"
+  status: true
+virtual_servers:
+- name: "Customer7_App_vs0"
+  ip: "10.1.10.100"
+- name: "Customer7_App_vs1"
+  ip: "10.1.10.200"
