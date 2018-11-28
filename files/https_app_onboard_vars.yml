@@ -13,6 +13,10 @@ virtual_network: "10.0.0.0/25"
 start_address: "10.0.0.1"
 end_address: "10.0.0.100"
 ptr_comment: "PTR record for {{application_name}}"
+domain_name: "app1.example.com"
+infoblox_username: "f5test"
+infoblox_password: "password"
+infoblox_host: "10.10.1.58"
 
 # Var file generation parameters
 vars_script_file: "{{scripts_path}}/vars_file_gen.py"
