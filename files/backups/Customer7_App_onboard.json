@@ -1,0 +1,85 @@
+{
+     "class": "AS3",
+     "action": "deploy",
+     "persist": true,
+     "declaration": {
+         "class": "ADC",
+         "schemaVersion": "3.6.0",
+         "id": "example-declaration-01",
+         "label": "Sample 1",
+         "remark": "Simple HTTPS application",
+         "App_Billing_Domain": {
+             "class": "Tenant",
+             "defaultRouteDomain": 0,
+             "Customer7_App": {
+                 "class": "Application",
+                 "template": "generic",
+                                  "Customer7_App_vs0": {
+                   "class": "Service_HTTPS",
+                   "virtualAddresses": [
+                     "10.1.10.100"
+                 ],
+                  "snat": "self",
+                  "pool": "Customer7_App_Pool",
+                  "serverTLS": "Customer7_App_CL",
+                  "policyEndpoint": {"bigip": "/Common/RDP_Baseline_4-7-16"},
+                  "profileHTTP": { "bigip": "/Common/http-xff" },
+                  "profileTCP": { "bigip": "/Common/ssc-tcp-3600" },
+                  "persistenceMethods": [{"bigip": "/Common/ssc-src_addr_1500"}]
+                 },
+                                  "Customer7_App_vs1": {
+                   "class": "Service_HTTPS",
+                   "virtualAddresses": [
+                     "10.1.10.200"
+                 ],
+                  "snat": "self",
+                  "pool": "Customer7_App_Pool",
+                  "serverTLS": "Customer7_App_CL",
+                  "policyEndpoint": {"bigip": "/Common/RDP_Baseline_4-7-16"},
+                  "profileHTTP": { "bigip": "/Common/http-xff" },
+                  "profileTCP": { "bigip": "/Common/ssc-tcp-3600" },
+                  "persistenceMethods": [{"bigip": "/Common/ssc-src_addr_1500"}]
+                 },
+                                  "Customer7_App_CL": {
+                     "class": "TLS_Server",
+                     "certificates": [{
+                        "certificate": "default"
+                      }]
+                 },
+                 "default": {
+                      "class": "Certificate",
+                      "certificate": {"bigip": "/Common/default.crt"},
+                      "privateKey": {"bigip": "/Common/default.key"}, 
+                      "passphrase": {
+                         "ciphertext": "ZjVmNQ==",
+                         "protected": "eyJhbGciOiJkaXIiLCJlbmMiOiJub25lIn0"
+                      }
+                 },
+                 "Customer7_App_Pool": {
+                     "class": "Pool",
+                     "monitors": [
+                         "http"
+                     ],
+                     "loadBalancingMode": "least-connections-node",
+                     "slowRampTime": 120,
+                     "members": [
+                                            {
+                         "enable": True,
+                         "servicePort": 80,
+                         "serverAddresses": [
+                              "192.168.1.131"
+                         ]
+                      },
+                                            {
+                         "enable": True,
+                         "servicePort": 80,
+                         "serverAddresses": [
+                              "192.168.1.141"
+                         ]
+                      },
+                                          ]
+                 }
+             }
+         }
+     }
+ }
