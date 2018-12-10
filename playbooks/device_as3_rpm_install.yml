@@ -1,0 +1,74 @@
+---
+
+- name: Push rpm and install onto BIG-IP
+  hosts: bigip
+  gather_facts: false
+
+  tasks:
+# Set provider
+  - name: Setup provider
+    set_fact:
+      provider:
+        server: "{{ inventory_hostname }}"
+        server_port: "{{ bigip_port }}"
+        user: "{{ bigip_username }}"
+        password: "{{ bigip_password }}"
+        validate_certs: "{{ validate_certs }}"
+
+# Set Var for curent AS3 file name
+  - name: Retrieve AS3 Install Version
+    find:
+      paths: ../files
+      patterns: "f5-appsvcs*.rpm"
+    register: as3rpm
+    delegate_to: localhost
+
+# Install AS3 rpm
+  - name: Install AS3
+    bigip_iapplx_package:
+      provider: "{{ provider }}"
+      package: "{{ as3rpm.files[0].path }}"
+    delegate_to: localhost
+  - pause:
+      seconds: 30
+
+# Create f5_tcp_progressive_12_1 TCP profile
+  - name: Get an API token
+    uri:
+      url: "https://{{inventory_hostname}}:{{ bigip_port }}/mgmt/shared/authn/login"
+      method: POST
+      body:
+        {
+          "username": "{{ bigip_username }}",
+          "password": "{{ bigip_password }}",
+          "loginProviderName": "tmos"
+        }
+      status_code: 200
+      body_format: json
+      validate_certs: "{{ validate_certs }}"
+    register: auth
+
+  - name: Send AS3 request for a temp tenant
+    uri:
+      url: "https://{{inventory_hostname}}:{{ bigip_port }}/mgmt/shared/appsvcs/declare"
+      method: "POST"
+      headers:
+        X-F5-Auth-Token: "{{ auth['json']['token']['name'] }}"
+      body_format: json
+      body: "{{lookup('file','temp_tenant.json')}}"
+      validate_certs: "{{ validate_certs }}"
+      status_code: 200
+    delegate_to: localhost
+    
+  - pause:
+      seconds: 30
+
+  - name: Send AS3 request for cleanup temp tenant
+    uri:
+      url: "https://{{inventory_hostname}}:{{ bigip_port }}/mgmt/shared/appsvcs/declare/TEMP"
+      method: "DELETE"
+      headers:
+        X-F5-Auth-Token: "{{ auth['json']['token']['name'] }}"
+      validate_certs: "{{ validate_certs }}"
+      status_code: 200
+    delegate_to: localhost
